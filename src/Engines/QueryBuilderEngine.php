@@ -356,7 +356,13 @@ class QueryBuilderEngine extends BaseEngine
     {
         $column = $this->addTablePrefix($query, $column);
         $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
+
+        $queryMethod = '=';
+        if ($this->isSmartSearch() || $this->isWildcard()) {
+            $queryMethod = 'LIKE';
+        }
+
+        $sql = $column . ' ' . $queryMethod . ' ?';
 
         if ($this->isCaseInsensitive()) {
             $sql = 'LOWER(' . $column . ') LIKE ?';
